@@ -41,7 +41,8 @@
         the connection is also available (unified-plan, plan-b or default).
     </p>
 
-    <video id="localVideo" playsinline autoplay muted></video>
+    <canvas id="localVideo"></canvas>
+    <!-- <video id="localVideo" playsinline autoplay muted></video> -->
     <video id="remoteVideo" playsinline autoplay></video>
 
     <div class="box">
@@ -74,8 +75,10 @@
 </div>
 
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script src="js/stream-mixer.min.js"></script>
 <script src="js/main.js" async></script>
 
 <script src="../../../js/lib/ga.js"></script>
+
 </body>
 </html>

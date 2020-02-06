@@ -18,12 +18,12 @@ callButton.addEventListener('click', call);
 hangupButton.addEventListener('click', hangup);
 
 let startTime;
-const localVideo = document.getElementById('localVideo');
+// const localVideo = document.getElementById('localVideo');
 const remoteVideo = document.getElementById('remoteVideo');
 
-localVideo.addEventListener('loadedmetadata', function() {
-  console.log(`Local video videoWidth: ${this.videoWidth}px,  videoHeight: ${this.videoHeight}px`);
-});
+// localVideo.addEventListener('loadedmetadata', function() {
+//   console.log(`Local video videoWidth: ${this.videoWidth}px,  videoHeight: ${this.videoHeight}px`);
+// });
 
 remoteVideo.addEventListener('loadedmetadata', function() {
   console.log(`Remote video videoWidth: ${this.videoWidth}px,  videoHeight: ${this.videoHeight}px`);
@@ -39,6 +39,8 @@ remoteVideo.addEventListener('resize', () => {
     startTime = null;
   }
 });
+
+StreamMixer.init('localVideo');
 
 let localStream;
 let pc1;
@@ -60,10 +62,32 @@ async function start() {
   console.log('Requesting local stream');
   startButton.disabled = true;
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: {
+        width: 1280,
+        height: 720,
+        frameRate: 30
+      }
+    });
+    console.log(StreamMixer)
+    await StreamMixer.addMedia({
+      source: stream,
+      sourceType: 'stream',
+      video: {
+          zIndex: 1,
+          top: 0,
+          left: 0,
+          width: stream.getVideoTracks()[0].getSettings().width,
+          height: stream.getVideoTracks()[0].getSettings().height,
+      },
+      audio: {
+          mediaType: 'mycam'
+      }
+    })
     console.log('Received local stream');
-    localVideo.srcObject = stream;
-    localStream = stream;
+    // localVideo.srcObject = stream;
+    localStream = StreamMixer.getStream();
     callButton.disabled = false;
   } catch (e) {
     alert(`getUserMedia() error: ${e.name}`);
